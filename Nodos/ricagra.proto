@@ -18,8 +18,6 @@ option go_package = ".;ricagra";
 
 package ricagra;
 
-import "google/protobuf/timestamp.proto";
-
 
 service RicAgra {
     rpc EnviarPeticion (WriteRequest) returns (WriteReply) {}
@@ -27,12 +25,14 @@ service RicAgra {
 
 
 message WriteRequest {
-	google.protobuf.Timestamp prioridad = 1;
-	string idNodo = 2;
+	int64 prioridad = 1;
+	int64 time = 3;
+	int64 idNodo = 2;
 }
 
 message WriteReply {
-	google.protobuf.Timestamp prioridad = 1;
-	string idNodo = 2;
+	int64 prioridad = 1;
+	int64 time = 4;
+	int64 idNodo = 2;
 	bool ack = 3;
 }

@@ -21,7 +21,7 @@ package ricagra;
 import "google/protobuf/timestamp.proto";
 
 
-service Ordenes {
+service RicAgra {
     rpc EnviarPeticion (WriteRequest) returns (WriteReply) {}
 }
 
@@ -33,6 +33,6 @@ message WriteRequest {
 
 message WriteReply {
 	google.protobuf.Timestamp prioridad = 1;
-	int64 idNodo = 2;
+	string idNodo = 2;
 	bool ack = 3;
 }

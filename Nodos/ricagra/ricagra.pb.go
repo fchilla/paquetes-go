@@ -100,7 +100,7 @@ type WriteReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Prioridad *timestamp.Timestamp `protobuf:"bytes,1,opt,name=prioridad,proto3" json:"prioridad,omitempty"`
-	IdNodo    int64                `protobuf:"varint,2,opt,name=idNodo,proto3" json:"idNodo,omitempty"`
+	IdNodo    string               `protobuf:"bytes,2,opt,name=idNodo,proto3" json:"idNodo,omitempty"`
 	Ack       bool                 `protobuf:"varint,3,opt,name=ack,proto3" json:"ack,omitempty"`
 }
 
@@ -143,11 +143,11 @@ func (x *WriteReply) GetPrioridad() *timestamp.Timestamp {
 	return nil
 }
 
-func (x *WriteReply) GetIdNodo() int64 {
+func (x *WriteReply) GetIdNodo() string {
 	if x != nil {
 		return x.IdNodo
 	}
-	return 0
+	return ""
 }
 
 func (x *WriteReply) GetAck() bool {
@@ -175,9 +175,9 @@ var file_ricagra_proto_rawDesc = []byte{
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54,
 	0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x70, 0x72, 0x69, 0x6f, 0x72, 0x69,
 	0x64, 0x61, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x64, 0x4e, 0x6f, 0x64, 0x6f, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x03, 0x52, 0x06, 0x69, 0x64, 0x4e, 0x6f, 0x64, 0x6f, 0x12, 0x10, 0x0a, 0x03, 0x61,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x64, 0x4e, 0x6f, 0x64, 0x6f, 0x12, 0x10, 0x0a, 0x03, 0x61,
 	0x63, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x03, 0x61, 0x63, 0x6b, 0x32, 0x49, 0x0a,
-	0x07, 0x4f, 0x72, 0x64, 0x65, 0x6e, 0x65, 0x73, 0x12, 0x3e, 0x0a, 0x0e, 0x45, 0x6e, 0x76, 0x69,
+	0x07, 0x52, 0x69, 0x63, 0x41, 0x67, 0x72, 0x61, 0x12, 0x3e, 0x0a, 0x0e, 0x45, 0x6e, 0x76, 0x69,
 	0x61, 0x72, 0x50, 0x65, 0x74, 0x69, 0x63, 0x69, 0x6f, 0x6e, 0x12, 0x15, 0x2e, 0x72, 0x69, 0x63,
 	0x61, 0x67, 0x72, 0x61, 0x2e, 0x57, 0x72, 0x69, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x1a, 0x13, 0x2e, 0x72, 0x69, 0x63, 0x61, 0x67, 0x72, 0x61, 0x2e, 0x57, 0x72, 0x69, 0x74,
@@ -206,8 +206,8 @@ var file_ricagra_proto_goTypes = []interface{}{
 var file_ricagra_proto_depIdxs = []int32{
 	2, // 0: ricagra.WriteRequest.prioridad:type_name -> google.protobuf.Timestamp
 	2, // 1: ricagra.WriteReply.prioridad:type_name -> google.protobuf.Timestamp
-	0, // 2: ricagra.Ordenes.EnviarPeticion:input_type -> ricagra.WriteRequest
-	1, // 3: ricagra.Ordenes.EnviarPeticion:output_type -> ricagra.WriteReply
+	0, // 2: ricagra.RicAgra.EnviarPeticion:input_type -> ricagra.WriteRequest
+	1, // 3: ricagra.RicAgra.EnviarPeticion:output_type -> ricagra.WriteReply
 	3, // [3:4] is the sub-list for method output_type
 	2, // [2:3] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -274,72 +274,72 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// OrdenesClient is the client API for Ordenes service.
+// RicAgraClient is the client API for RicAgra service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type OrdenesClient interface {
+type RicAgraClient interface {
 	EnviarPeticion(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteReply, error)
 }
 
-type ordenesClient struct {
+type ricAgraClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewOrdenesClient(cc grpc.ClientConnInterface) OrdenesClient {
-	return &ordenesClient{cc}
+func NewRicAgraClient(cc grpc.ClientConnInterface) RicAgraClient {
+	return &ricAgraClient{cc}
 }
 
-func (c *ordenesClient) EnviarPeticion(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteReply, error) {
+func (c *ricAgraClient) EnviarPeticion(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteReply, error) {
 	out := new(WriteReply)
-	err := c.cc.Invoke(ctx, "/ricagra.Ordenes/EnviarPeticion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ricagra.RicAgra/EnviarPeticion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// OrdenesServer is the server API for Ordenes service.
-type OrdenesServer interface {
+// RicAgraServer is the server API for RicAgra service.
+type RicAgraServer interface {
 	EnviarPeticion(context.Context, *WriteRequest) (*WriteReply, error)
 }
 
-// UnimplementedOrdenesServer can be embedded to have forward compatible implementations.
-type UnimplementedOrdenesServer struct {
+// UnimplementedRicAgraServer can be embedded to have forward compatible implementations.
+type UnimplementedRicAgraServer struct {
 }
 
-func (*UnimplementedOrdenesServer) EnviarPeticion(context.Context, *WriteRequest) (*WriteReply, error) {
+func (*UnimplementedRicAgraServer) EnviarPeticion(context.Context, *WriteRequest) (*WriteReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnviarPeticion not implemented")
 }
 
-func RegisterOrdenesServer(s *grpc.Server, srv OrdenesServer) {
-	s.RegisterService(&_Ordenes_serviceDesc, srv)
+func RegisterRicAgraServer(s *grpc.Server, srv RicAgraServer) {
+	s.RegisterService(&_RicAgra_serviceDesc, srv)
 }
 
-func _Ordenes_EnviarPeticion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RicAgra_EnviarPeticion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(WriteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OrdenesServer).EnviarPeticion(ctx, in)
+		return srv.(RicAgraServer).EnviarPeticion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ricagra.Ordenes/EnviarPeticion",
+		FullMethod: "/ricagra.RicAgra/EnviarPeticion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrdenesServer).EnviarPeticion(ctx, req.(*WriteRequest))
+		return srv.(RicAgraServer).EnviarPeticion(ctx, req.(*WriteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Ordenes_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "ricagra.Ordenes",
-	HandlerType: (*OrdenesServer)(nil),
+var _RicAgra_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "ricagra.RicAgra",
+	HandlerType: (*RicAgraServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "EnviarPeticion",
-			Handler:    _Ordenes_EnviarPeticion_Handler,
+			Handler:    _RicAgra_EnviarPeticion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

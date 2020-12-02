@@ -1,0 +1,50 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+option go_package = ".;cliente";
+
+package cliente;
+
+service Clientes {
+        rpc GetListaLibros(Request) returns (BookList) {}
+
+        rpc GetChunk(Request) returns (Chunk) {}
+
+        rpc SubirLibro (stream Chunk) returns (UploadReply) {}
+}
+
+message BookList {
+        bytes file = 1;
+}
+
+message Chunk {
+        string name = 1;
+        bytes content = 2;
+}
+
+message Request {
+        string name = 1;
+}
+
+enum UploadReplyCode {
+        unknown = 0;
+        ok = 1;
+        failed = 2;
+}
+
+message UploadReply {
+        UploadReplyCode code = 1;
+}

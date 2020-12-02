@@ -39,12 +39,7 @@ message Request {
         string name = 1;
 }
 
-enum UploadReplyCode {
-        unknown = 0;
-        ok = 1;
-        failed = 2;
-}
 
 message UploadReply {
-        UploadReplyCode code = 1;
+        string reply = 1;
 }

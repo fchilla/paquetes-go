@@ -20,7 +20,7 @@ package registro;
 
 
 service Registro {
-    rpc EnviarRegistro (RegRequest) returns (RegReply) {}
+    rpc EnviarRegistro (stream RegRequest) returns (RegReply) {}
 }
 
 

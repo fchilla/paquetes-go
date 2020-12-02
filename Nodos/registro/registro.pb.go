@@ -252,13 +252,13 @@ var file_registro_proto_rawDesc = []byte{
 	0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x69,
 	0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x22, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x52, 0x65, 0x70,
 	0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0x48, 0x0a, 0x08, 0x52, 0x65,
-	0x67, 0x69, 0x73, 0x74, 0x72, 0x6f, 0x12, 0x3c, 0x0a, 0x0e, 0x45, 0x6e, 0x76, 0x69, 0x61, 0x72,
+	0x28, 0x08, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0x4a, 0x0a, 0x08, 0x52, 0x65,
+	0x67, 0x69, 0x73, 0x74, 0x72, 0x6f, 0x12, 0x3e, 0x0a, 0x0e, 0x45, 0x6e, 0x76, 0x69, 0x61, 0x72,
 	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x6f, 0x12, 0x14, 0x2e, 0x72, 0x65, 0x67, 0x69, 0x73,
 	0x74, 0x72, 0x6f, 0x2e, 0x52, 0x65, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12,
 	0x2e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x6f, 0x2e, 0x52, 0x65, 0x67, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x22, 0x00, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x3b, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74,
-	0x72, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x79, 0x22, 0x00, 0x28, 0x01, 0x42, 0x0c, 0x5a, 0x0a, 0x2e, 0x3b, 0x72, 0x65, 0x67, 0x69,
+	0x73, 0x74, 0x72, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -370,7 +370,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RegistroClient interface {
-	EnviarRegistro(ctx context.Context, in *RegRequest, opts ...grpc.CallOption) (*RegReply, error)
+	EnviarRegistro(ctx context.Context, opts ...grpc.CallOption) (Registro_EnviarRegistroClient, error)
 }
 
 type registroClient struct {
@@ -381,59 +381,93 @@ func NewRegistroClient(cc grpc.ClientConnInterface) RegistroClient {
 	return &registroClient{cc}
 }
 
-func (c *registroClient) EnviarRegistro(ctx context.Context, in *RegRequest, opts ...grpc.CallOption) (*RegReply, error) {
-	out := new(RegReply)
-	err := c.cc.Invoke(ctx, "/registro.Registro/EnviarRegistro", in, out, opts...)
+func (c *registroClient) EnviarRegistro(ctx context.Context, opts ...grpc.CallOption) (Registro_EnviarRegistroClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Registro_serviceDesc.Streams[0], "/registro.Registro/EnviarRegistro", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &registroEnviarRegistroClient{stream}
+	return x, nil
+}
+
+type Registro_EnviarRegistroClient interface {
+	Send(*RegRequest) error
+	CloseAndRecv() (*RegReply, error)
+	grpc.ClientStream
+}
+
+type registroEnviarRegistroClient struct {
+	grpc.ClientStream
+}
+
+func (x *registroEnviarRegistroClient) Send(m *RegRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *registroEnviarRegistroClient) CloseAndRecv() (*RegReply, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(RegReply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // RegistroServer is the server API for Registro service.
 type RegistroServer interface {
-	EnviarRegistro(context.Context, *RegRequest) (*RegReply, error)
+	EnviarRegistro(Registro_EnviarRegistroServer) error
 }
 
 // UnimplementedRegistroServer can be embedded to have forward compatible implementations.
 type UnimplementedRegistroServer struct {
 }
 
-func (*UnimplementedRegistroServer) EnviarRegistro(context.Context, *RegRequest) (*RegReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EnviarRegistro not implemented")
+func (*UnimplementedRegistroServer) EnviarRegistro(Registro_EnviarRegistroServer) error {
+	return status.Errorf(codes.Unimplemented, "method EnviarRegistro not implemented")
 }
 
 func RegisterRegistroServer(s *grpc.Server, srv RegistroServer) {
 	s.RegisterService(&_Registro_serviceDesc, srv)
 }
 
-func _Registro_EnviarRegistro_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegRequest)
-	if err := dec(in); err != nil {
+func _Registro_EnviarRegistro_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(RegistroServer).EnviarRegistro(&registroEnviarRegistroServer{stream})
+}
+
+type Registro_EnviarRegistroServer interface {
+	SendAndClose(*RegReply) error
+	Recv() (*RegRequest, error)
+	grpc.ServerStream
+}
+
+type registroEnviarRegistroServer struct {
+	grpc.ServerStream
+}
+
+func (x *registroEnviarRegistroServer) SendAndClose(m *RegReply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *registroEnviarRegistroServer) Recv() (*RegRequest, error) {
+	m := new(RegRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(RegistroServer).EnviarRegistro(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/registro.Registro/EnviarRegistro",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistroServer).EnviarRegistro(ctx, req.(*RegRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 var _Registro_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "registro.Registro",
 	HandlerType: (*RegistroServer)(nil),
-	Methods: []grpc.MethodDesc{
+	Methods:     []grpc.MethodDesc{},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "EnviarRegistro",
-			Handler:    _Registro_EnviarRegistro_Handler,
+			StreamName:    "EnviarRegistro",
+			Handler:       _Registro_EnviarRegistro_Handler,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "registro.proto",
 }

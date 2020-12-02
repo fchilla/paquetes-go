@@ -26,10 +26,16 @@ service Registro {
 
 message RegRequest {
     oneof data {
-        string bookData = 1;
-        int64 idNodo = 2;
-        ChunkLoc chunk = 3;
+        BookInfo info = 1;
+        ChunkLoc chunk = 2;
     }
+}
+
+message BookInfo {
+    string filename = 1;
+    int64 chunkNumber = 2;
+    string nodes = 3;
+    int64 idNodo = 4;
 }
 
 message ChunkLoc {
